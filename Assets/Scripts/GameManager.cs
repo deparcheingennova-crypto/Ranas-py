@@ -43,12 +43,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject waitingForPlayersText, continueTeamAssignButton, draggableCardsScrollView;
     [SerializeField] private TextMeshProUGUI timerText, playerCountText, playersPerTeamText;
     [SerializeField] private Sprite defaultPlayerPhoto;
-    // Team 1 color is #7DEFAF, text is #007333
-    // Team 2 color is #C191E0, text is #51236F
+    // Ranas 1 color is #7DEFAF, text is #007333
+    // Ranas 2 color is #C191E0, text is #51236F
     public static readonly Color team1Color = new Color(0.4901961f, 0.9294118f, 0.6862745f);
     public static readonly Color team2Color = new Color(0.7568628f, 0.5686275f, 0.8784314f);
-    // Team 1 text color is #7DEFAF, text is #C84B00
-    // Team 2 text color is #C191E0, text is #4B4B4B
+    // Ranas 1 text color is #7DEFAF, text is #C84B00
+    // Ranas 2 text color is #C191E0, text is #4B4B4B
     public static readonly Color team1TextColor = new Color(1f, 1f, 1f);
     public static readonly Color team2TextColor = new Color(1f, 1f, 1f);
 
@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject); // Esto mantiene a este singleton en todas las Escenas, haciendo facil entregar
-                                       // la informaci�n necesaria al empezar el juego
+                                       // la informaciÃ³n necesaria al empezar el juego
     
         if (!mainAudioSource)
             mainAudioSource = GetComponent<AudioSource>();
@@ -319,12 +319,12 @@ public class GameManager : MonoBehaviour
         //return;
 
         //string[] names = {
-        //    "Alejandra", "Gabriel", "Valentina", "Sebasti�n", "Alejandro",
-        //    "Mariana", "Maximiliano", "Isabella", "Emiliano", "Sof�a",
-        //    "Estefan�a", "Federico", "Leonardo", "Luciana", "Crist�bal",
-        //    "Mart�n", "Juliana", "Nicol�s", "Juanita", "Camilo",
-        //    "Mat�as", "Alejandro", "Karina", "Rodrigo", "Tatiana",
-        //    "Andr�s", "Gonzalo", "Violeta", "Salom�", "Fabi�n",
+        //    "Alejandra", "Gabriel", "Valentina", "SebastiÃ¡n", "Alejandro",
+        //    "Mariana", "Maximiliano", "Isabella", "Emiliano", "SofÃ­a",
+        //    "EstefanÃ­a", "Federico", "Leonardo", "Luciana", "CristÃ³bal",
+        //    "MartÃ­n", "Juliana", "NicolÃ¡s", "Juanita", "Camilo",
+        //    "MatÃ­as", "Alejandro", "Karina", "Rodrigo", "Tatiana",
+        //    "AndrÃ©s", "Gonzalo", "Violeta", "SalomÃ©", "FabiÃ¡n",
         //    "Renata"
         //};
 
@@ -390,7 +390,7 @@ public class GameManager : MonoBehaviour
         {
             playersPerTeamText.text = $"Error: Numero de jugadores invalido ({players.Count}). Debe haber 2, 4, 6, o 12 jugadores.";
             playersPerTeamText.color = Color.red;
-            Debug.LogWarning($"Error: N�mero de jugadores inv�lido ({players.Count}). Debe haber 2, 4, 6, o 12 jugadores.");
+            Debug.LogWarning($"Error: NÃºmero de jugadores invÃ¡lido ({players.Count}). Debe haber 2, 4, 6, o 12 jugadores.");
             return;
         }
 
@@ -505,7 +505,7 @@ public class GameManager : MonoBehaviour
         if (!team1.Contains(player))
         {
             team1.Add(player);
-            Debug.Log($"Player {player.playerName} added to Team 1");
+            Debug.Log($"Player {player.playerName} added to Ranas 1");
         }
     }
 
@@ -514,7 +514,7 @@ public class GameManager : MonoBehaviour
         if (!team2.Contains(player))
         {
             team2.Add(player);
-            Debug.Log($"Player {player.playerName} added to Team 2");
+            Debug.Log($"Player {player.playerName} added to Ranas 2");
         }
     }
 
