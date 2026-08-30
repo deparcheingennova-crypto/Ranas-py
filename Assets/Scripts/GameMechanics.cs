@@ -100,7 +100,7 @@ public class GameMechanics : MonoBehaviour
     private int roundCount = 1;
 
     [Header("Rounds")]
-    public int maxRounds = 3;
+    public int maxRounds = 6;
 
     private Player actualTurnPlayer;
     private int team1TurnsRemaining = 6; // Total turns for Team 1
@@ -454,17 +454,14 @@ public class GameMechanics : MonoBehaviour
     private void UpdateTurnsText()
     {
         if (actualTurnPlayer == null) return;
-        if (!playerTurnsLeft.ContainsKey(actualTurnPlayer)) return;
 
-        int total = playerTotalTurns[actualTurnPlayer];
-        int remaining = playerTurnsLeft[actualTurnPlayer];
-        int current = total - remaining;
+        int remaining = actualTurnPlayer.team == Player.Team.Team1
+            ? team1TurnsRemaining
+            : team2TurnsRemaining;
+        int current = Mathf.Clamp(turnsPerTeam - remaining, 0, turnsPerTeam);
 
-        string playerName = actualTurnPlayer.playerName;
-
-        turnsText.text = $"{playerName} - TURNO {current}/{total}";
+        turnsText.text = $"Argolla {current}/{turnsPerTeam}";
     }
-
 
 
     private void EnableTeamsLights(bool enableTeam1, bool enableTeam2)
@@ -503,7 +500,7 @@ public class GameMechanics : MonoBehaviour
         Debug.Log("Next turn called");
         StartCoroutine(WaitBeforeEnablingCanvas());
         turnCount += 1;
-        roundsText.text = $"TIRO #{jsonTurn}";
+        roundsText.text = $"ARGOLLA {jsonTurn}/{turnsPerTeam}";
 
         // Start the game
         if (!gameStarted)
@@ -511,14 +508,12 @@ public class GameMechanics : MonoBehaviour
             actualTurnPlayer = team1[0];  // Team 1 starts first
             InitializePlayerTurns();
             gameStarted = true;
-            playerTurnsLeft[actualTurnPlayer]--;
-            UpdateTeamTurnsRemaining();
 
             UpdateTurnsText();
 
 
-            //CreatePopUpMessage($"Comienza {team1[0].playerName} del Equipo 1", new Color(0.901f, 1f, 0f));
-            CreatePopUpMessage($"Comienza el Equipo 1 con {team1TurnsRemaining + 1} tiros", team1ColorPopup);
+            //CreatePopUpMessage($"Comienza {team1[0].playerName} del Ranas 1", new Color(0.901f, 1f, 0f));
+            CreatePopUpMessage($"Comienza Ranas 1 con {team1TurnsRemaining} argollas", team1ColorPopup);
             EnableTeamsLights(true, false);
 
             // Add new round to screen 1
@@ -585,7 +580,7 @@ public class GameMechanics : MonoBehaviour
                 playerTurnsLeft[actualTurnPlayer]--;
                 UpdateTeamTurnsRemaining();
 
-                // NUEVO: si este lanzamiento fue el turno 6 y ya no quedan turnos del Equipo 1,
+                // NUEVO: si este lanzamiento fue el turno 6 y ya no quedan turnos del Ranas 1,
                 // activar el cambio de equipo en ESTE MISMO lanzamiento, sin esperar al siguiente.
                 if (!teamsChangeEveryPlayer && actualTurnPlayer.team == Player.Team.Team1 && team1TurnsRemaining <= 0 && !teamHasChanged)
                 {
@@ -601,17 +596,34 @@ public class GameMechanics : MonoBehaviour
                     return;
                 }
 
+                // Finalizar la ronda inmediatamente después de la sexta argolla de Ranas 2.
+                if (!teamsChangeEveryPlayer && actualTurnPlayer.team == Player.Team.Team2 && team2TurnsRemaining <= 0)
+                {
+                    EndRound();
+                    actualRoundContent.team1PointsTxt.text = team1RoundScore.ToString();
+                    actualRoundContent.team2PointsTxt.text = team2RoundScore.ToString();
+
+                    totalPointsTeam1.text = team1Score.ToString();
+                    totalPointsTeam2.text = team2Score.ToString();
+
+                    FindObjectOfType<KeyboardSimulator>().PressTKey();
+
+                    canThrow = false;
+                    CreatePopUpMessageBlocked("Fin de la ronda. Presiona el botón de continuación");
+                    return;
+                }
+
                 // Notify
                 if (playerTurnsLeft[actualTurnPlayer] > 0)
                 {
                     //CreatePopUpMessage($"Continua {actualTurnPlayer.playerName}, {playerTurnsLeft[actualTurnPlayer] + 1} turnos restantes", actualTurnPlayer.team == Player.Team.Team1 ? new Color(0.901f, 1f, 0f) : new Color(0.117f, 0.216f, 1f));
-                    string msg = actualTurnPlayer.team == Player.Team.Team1 ? "Equipo 1" : "Equipo 2";
+                    string msg = actualTurnPlayer.team == Player.Team.Team1 ? "Ranas 1" : "Ranas 2";
                     //CreatePopUpMessage($"Continua el {msg}", actualTurnPlayer.team == Player.Team.Team1 ? team1ColorPopup : team2ColorPopup);
                 }
                 else
                 {
                     //CreatePopUpMessage($"Continua {actualTurnPlayer.playerName} con su ultimo tiro", actualTurnPlayer.team == Player.Team.Team1 ? new Color(0.901f, 1f, 0f) : new Color(0.117f, 0.216f, 1f));
-                    string msg = actualTurnPlayer.team == Player.Team.Team1 ? "Equipo 1" : "Equipo 2";
+                    string msg = actualTurnPlayer.team == Player.Team.Team1 ? "Ranas 1" : "Ranas 2";
                     //CreatePopUpMessage($"Continua el {msg}", actualTurnPlayer.team == Player.Team.Team1 ? team1ColorPopup : team2ColorPopup);
                 }
 
@@ -665,14 +677,14 @@ public class GameMechanics : MonoBehaviour
                 if (playerTurnsLeft[actualTurnPlayer] > 0)
                 {
                     //CreatePopUpMessage($"Turno de {actualTurnPlayer.playerName} del Equipo {(actualTurnPlayer.team == Player.Team.Team1 ? "1" : "2")}", actualTurnPlayer.team == Player.Team.Team1 ? new Color(0.901f, 1f, 0f) : new Color(0.117f, 0.216f, 1f));
-                    string msg = actualTurnPlayer.team == Player.Team.Team1 ? "Equipo 1" : "Equipo 2";
+                    string msg = actualTurnPlayer.team == Player.Team.Team1 ? "Ranas 1" : "Ranas 2";
                     int shots = actualTurnPlayer.team == Player.Team.Team1 ? team1TurnsRemaining : team2TurnsRemaining;
                     CreatePopUpMessage($"Continua el {msg}", actualTurnPlayer.team == Player.Team.Team1 ? team1ColorPopup : team2ColorPopup);
                 }
                 else
                 {
                     //CreatePopUpMessage($"Turno de {actualTurnPlayer.playerName} con su ultimo tiro", actualTurnPlayer.team == Player.Team.Team1 ? new Color(0.901f, 1f, 0f) : new Color(0.117f, 0.216f, 1f));
-                    string msg = actualTurnPlayer.team == Player.Team.Team1 ? "Equipo 1" : "Equipo 2";
+                    string msg = actualTurnPlayer.team == Player.Team.Team1 ? "Ranas 1" : "Ranas 2";
                     CreatePopUpMessage($"Continua el {msg}", actualTurnPlayer.team == Player.Team.Team1 ? team1ColorPopup : team2ColorPopup);
                 }
 
@@ -841,7 +853,7 @@ public class GameMechanics : MonoBehaviour
 
         // Reset the turn count for the next round
         turnCount = 1;
-        roundsText.text = $"TIRO #{jsonTurn}";
+        roundsText.text = $"ARGOLLA {jsonTurn}/{turnsPerTeam}";
     }
 
     public void EndGame()
@@ -882,13 +894,13 @@ public class GameMechanics : MonoBehaviour
         {
             victoryPanel1.team1VictoryPanel.SetActive(true);
             victoryPanel2.team1VictoryPanel.SetActive(true);
-            teamWin = "Equipo 1";
+            teamWin = "Ranas 1";
         }
         else if (team2Score > team1Score)
         {
             victoryPanel1.team2VictoryPanel.SetActive(true);
             victoryPanel2.team2VictoryPanel.SetActive(true);
-            teamWin = "Equipo 2";
+            teamWin = "Ranas 2";
         }
         else
         {
@@ -1003,7 +1015,7 @@ public class GameMechanics : MonoBehaviour
         // Drenar los turnos del equipo actual
         if (currentIsTeam1)
         {
-            Debug.Log($"[GameMechanics] ForceTeamChange: Drenando {team1TurnsRemaining} turnos del Equipo 1");
+            Debug.Log($"[GameMechanics] ForceTeamChange: Drenando {team1TurnsRemaining} turnos del Ranas 1");
             team1TurnsRemaining = 0;
             // También drenar los turnos de todos los jugadores del equipo 1
             foreach (var player in team1)
@@ -1014,7 +1026,7 @@ public class GameMechanics : MonoBehaviour
         }
         else
         {
-            Debug.Log($"[GameMechanics] ForceTeamChange: Drenando {team2TurnsRemaining} turnos del Equipo 2");
+            Debug.Log($"[GameMechanics] ForceTeamChange: Drenando {team2TurnsRemaining} turnos del Ranas 2");
             team2TurnsRemaining = 0;
             // También drenar los turnos de todos los jugadores del equipo 2
             foreach (var player in team2)
@@ -1184,11 +1196,10 @@ public class GameMechanics : MonoBehaviour
         isProcessingPopup = false;
         // </CHANGE>
 
-        if (pendingTeamSwitchTurnStart)          // NUEVO
+        if (pendingTeamSwitchTurnStart)
         {
             pendingTeamSwitchTurnStart = false;
-            playerTurnsLeft[actualTurnPlayer]--;
-            UpdateTeamTurnsRemaining();
+            UpdateTurnsText();
         }
 
         canThrow = true;
