@@ -43,12 +43,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject waitingForPlayersText, continueTeamAssignButton, draggableCardsScrollView;
     [SerializeField] private TextMeshProUGUI timerText, playerCountText, playersPerTeamText;
     [SerializeField] private Sprite defaultPlayerPhoto;
-    // Ranas 1 color is #7DEFAF, text is #007333
-    // Ranas 2 color is #C191E0, text is #51236F
+    // Team 1 color is #7DEFAF, text is #007333
+    // Team 2 color is #C191E0, text is #51236F
     public static readonly Color team1Color = new Color(0.4901961f, 0.9294118f, 0.6862745f);
     public static readonly Color team2Color = new Color(0.7568628f, 0.5686275f, 0.8784314f);
-    // Ranas 1 text color is #7DEFAF, text is #C84B00
-    // Ranas 2 text color is #C191E0, text is #4B4B4B
+    // Team 1 text color is #7DEFAF, text is #C84B00
+    // Team 2 text color is #C191E0, text is #4B4B4B
     public static readonly Color team1TextColor = new Color(1f, 1f, 1f);
     public static readonly Color team2TextColor = new Color(1f, 1f, 1f);
 
@@ -505,7 +505,7 @@ public class GameManager : MonoBehaviour
         if (!team1.Contains(player))
         {
             team1.Add(player);
-            Debug.Log($"Player {player.playerName} added to Ranas 1");
+            Debug.Log($"Player {player.playerName} added to Team 1");
         }
     }
 
@@ -514,7 +514,7 @@ public class GameManager : MonoBehaviour
         if (!team2.Contains(player))
         {
             team2.Add(player);
-            Debug.Log($"Player {player.playerName} added to Ranas 2");
+            Debug.Log($"Player {player.playerName} added to Team 2");
         }
     }
 
