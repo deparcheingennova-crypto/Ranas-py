@@ -28547,7 +28547,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   codJuego: 3003
-  versionGame: 1.0.0 test
+  versionGame: 1.0.0 py
   urlGetData: https://distrito-e.com.co/api/get_jugadores
   apiKey: Va8ZuxamNDX7ORDBuy5wpejrmOFnxOV2cC42JI9wi6UGbVpCsjRRZV5dB9OGd4fJJirkOMhmpfeh8tZoI4n3pUAwNxCeYPZGEG9vryHrcDk65wBYd1QQ3Mp1WmDTks4y
   nameGame: RANA
