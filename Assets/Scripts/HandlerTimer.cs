@@ -48,7 +48,7 @@ public class HandlerTimer : MonoBehaviour
         StartCoroutine(WaitOfData());
         timeCurrentGame = $"Tiempo: {dataGameTime.timeCurrent} min";
 
-        mmf = MemoryMappedFile.CreateOrOpen("GameTime", 1024);
+        mmf = MemoryMappedFile.CreateOrOpen("Local\\DistritoRanaGameTimeV1", 1024);
         accessor = mmf.CreateViewAccessor();
 
         objectTime.min = 0;
@@ -73,8 +73,9 @@ public class HandlerTimer : MonoBehaviour
             return;
         }
 
-        accessor.Write(0, bytes.Length);
         accessor.WriteArray(4, bytes, 0, bytes.Length);
+        // Publicar la longitud al final evita que un lector tome JSON a medio escribir.
+        accessor.Write(0, bytes.Length);
     }
 
     public void OnApplicationQuit()
