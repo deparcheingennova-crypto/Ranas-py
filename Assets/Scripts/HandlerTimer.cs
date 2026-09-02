@@ -27,6 +27,8 @@ public class HandlerTimer : MonoBehaviour
     public ObjectTime objectTime = new ObjectTime();
     private MemoryMappedFile mmf;
     private MemoryMappedViewAccessor accessor;
+    private const float StartupDelaySeconds = 60f;
+    private float timerStartedAtRealtime;
 
     public void Awake()
     {
@@ -54,6 +56,9 @@ public class HandlerTimer : MonoBehaviour
         objectTime.timeOver = false;
 
         WriteSharedMemory(objectTime);
+        // Time.realtimeSinceStartup pertenece a toda la ejecucion de Unity.
+        // Usar el segundo 60 como origen evita reinicios al cambiar de partida/escena.
+        timerStartedAtRealtime = StartupDelaySeconds;
     }
 
     private void WriteSharedMemory(ObjectTime timeData)
@@ -97,17 +102,16 @@ public class HandlerTimer : MonoBehaviour
 
     IEnumerator StartTimer()
     {
-        int contSeg = 0;
         while (true)
         {
-            yield return new WaitForSeconds(1f);
-            contSeg++;
+            yield return new WaitForSecondsRealtime(0.25f);
 
-            if (contSeg == 60)
-            {
-                dataGameTime.timeCurrent++;
-                contSeg = 0;
-            }
+            int elapsedSeconds = Mathf.Max(
+                0,
+                Mathf.FloorToInt(Time.realtimeSinceStartup - timerStartedAtRealtime)
+            );
+            dataGameTime.timeCurrent = elapsedSeconds / 60;
+            int contSeg = elapsedSeconds % 60;
 
             timeCurrentGame = $"Tiempo: {dataGameTime.timeCurrent:00} : {contSeg:00} min";
 
